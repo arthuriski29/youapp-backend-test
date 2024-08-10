@@ -4,7 +4,7 @@
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
-  
+
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
     <p align="center">
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
@@ -26,23 +26,146 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Installation
+# Backend Test YouApp
 
+A Backend Test Project for Backend Candidate in YouApp
+
+## What is this ?
+
+This is a NestJS-based application with MongoDB for data storage and RabbitMQ for message queuing.
+
+
+## Tech Stack
+
+| Stack | Logo     | Description |
+| :-------- | :------- | :------- |
+| [NestJS](https://nestjs.com/)  | <img src="https://nestjs.com/img/logo-small.svg" alt="Nest Image" width="200" style="margin-right: 20px;"> |Framework for Backend App|
+| [MongoDB](https://www.mongodb.com/)  |  <img src="https://webimages.mongodb.com/_com_assets/cms/kuyjf3vea2hg34taa-horizontal_default_slate_blue.svg?auto=format%252Ccompress" alt="Mongo Image" width="600">|mongoose NOSQL with MongoDB Atlas Database|
+| [RabbitMQ](https://www.rabbitmq.com/) | <img src="https://www.rabbitmq.com/img/rabbitmq-logo-with-name.svg" alt="RabbitMQ Image" width="600"> | message-broker for chat feature
+
+
+
+# How to run this app ?
+
+## 1. Run Locally
+### Make sure you login into docker hub
+
+Pull [rabbitmq's official docker image](https://hub.docker.com/_/rabbitmq) from docker hub to your image
+
+or on terminal
 ```bash
-$ npm install
+docker pull rabbitmq
 ```
 
-## Running the app
+run the image
+```bash
+docker run rabbitmq
+```
+visit [http://localhost:5672/](http://localhost:5672/) on your browser to make sure rabbitmq management can be accessed
+
+Then,
+
+### Clone and run
+
+Clone this project
+```bash
+  git clone https://github.com/arthuriski29/youapp-backend-test/
+```
+Go to the project directory
 
 ```bash
-# development
-$ npm run start
+  cd test-youapp
+```
 
-# watch mode
-$ npm run start:dev
+Install dependencies
 
-# production mode
-$ npm run start:prod
+```bash
+  npm install
+```
+
+Start the server
+
+```bash
+  npm run start:dev
+```
+## 2. Using Docker
+
+### - Download the `docker image` from [here](https://hub.docker.com/r/arthuriski/youapp-backend-test-app)
+
+or on your terminal
+```bash
+docker pull arthuriski/youapp-backend-test-app
+```
+
+### - Run the server
+
+```bash
+docker run arthuriski/youapp-backend-test-app
+```
+
+visit [http://localhost:5672/](http://localhost:5672/) on your browser to make sure rabbitmq management can be accessed
+
+visit [http://localhost:3000/](http://localhost:3000/) on your browser to see the app is running
+
+if its connected you will see
+```bash
+{
+    "success": true,
+    "message": "test-youapp Backend Connected"
+}
+```
+
+
+## API Endpoint
+
+#### Register (Auth) POST
+```http
+/api/register
+```
+#### Login (Auth) POST
+```http
+/api/login
+```
+#### Create Profile POST
+```http
+/api/createProfile
+```
+#### Get Profile GET
+```http
+/api/getProfile
+```
+
+#### Update Profile PUT
+```http
+/api/updateProfile
+```
+#### Send Message CREATE
+```http
+/api/sendMessage
+```
+#### View Messages GET
+```http
+/api/viewMessages
+```
+## Environment Variables
+
+Copy this following environtment variables to your `.env` file to run this project.
+
+``` bash
+DB_URI=mongodb+srv://SbhxKp6yVUfgoMEA:SbhxKp6yVUfgoMEA@cluster0.q65hmdh.mongodb.net/test-youapp?retryWrites=true&w=majority
+MONGO_ATLAS_DB=test-youapp
+MONGO_ATLAS_USER=SbhxKp6yVUfgoMEA
+MONGO_ATLAS_PASSWORD=SbhxKp6yVUfgoMEA
+
+JWT_SECRET=n3st4pp
+JWT_EXPIRES=3d
+
+APP_SECRET=n3st4pp
+
+##RabbitMQ
+MESSAGE_QUEUE_URL=amqp://rabbitmq:5672
+# MESSAGE_QUEUE_URL = amqp://guest:guest@localhost:5672/ #For running locally only
+# MESSAGE_QUEUE_URL = amqp://localhost:5672
 ```
 
 ## Test
@@ -62,23 +185,6 @@ $ npm run test:cov
 
 Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
 ## License
 
   Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-
-## Tech Stack
-<p align="center">
-  <img src="https://nestjs.com/img/logo-small.svg" alt="Nest Image" width="200" style="margin-right: 20px;">
-  <img src="https://webimages.mongodb.com/_com_assets/cms/kuyjf3vea2hg34taa-horizontal_default_slate_blue.svg?auto=format%252Ccompress" alt="Mongo Image" width="600">
-</p>
-
-| Stack | Logo     | Description |
-| :-------- | :------- | :------- |
-| [NestJS](https://nestjs.com/)  | <img src="https://nestjs.com/img/logo-small.svg" alt="Nest Image" width="200" style="margin-right: 20px;"> |Framework for Backend App|
-| [MongoDB](https://www.mongodb.com/)  |  <img src="https://webimages.mongodb.com/_com_assets/cms/kuyjf3vea2hg34taa-horizontal_default_slate_blue.svg?auto=format%252Ccompress" alt="Mongo Image" width="600">|mongoose NOSQL with MongoDB Atlas Database|
