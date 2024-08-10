@@ -1,0 +1,36 @@
+# Use root/example as user/password credentials
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI
+    volumes:
+      - /var/lib/rabbitmq
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_URI=mongodb+srv://SbhxKp6yVUfgoMEA:SbhxKp6yVUfgoMEA@cluster0.q65hmdh.mongodb.net/test-youapp?retryWrites=true&w=majority
+      - MESSAGE_QUEUE_URL=amqp://rabbitmq:5672
+      - JWT_EXPIRES=1h
+    volumes:
+      - .:/usr/src/app # any change to base folder should be reflected
+      - /usr/src/app/node_modules
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
