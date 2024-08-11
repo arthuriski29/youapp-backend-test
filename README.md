@@ -45,6 +45,7 @@ This is a NestJS-based application with MongoDB for data storage and RabbitMQ fo
 
 
 
+
 # How to run this app ?
 
 ## 1. Run Locally
@@ -90,18 +91,78 @@ Start the server
 ```
 ## 2. Using Docker
 
-### - Download the `docker image` from [here](https://hub.docker.com/r/arthuriski/youapp-backend-test-app)
-
-or on your terminal
+### 1. Pull the `docker image` of this app
+ from [here](https://hub.docker.com/r/arthuriski/youapp-backend-test-app),  or on your terminal
 ```bash
 docker pull arthuriski/youapp-backend-test-app
 ```
 
-### - Run the server
+### 2. Make `docker.compose.yml`
+you can copy from `docker.compose.yml` from this project
+or, create on your own
 
 ```bash
-docker run arthuriski/youapp-backend-test-app
+# docker.compose.yml
+# Use root/example as user/password credentials
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI
+    volumes:
+      - /var/lib/rabbitmq
+    networks:
+      - app-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - rabbitmq
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_URI=mongodb+srv://SbhxKp6yVUfgoMEA:SbhxKp6yVUfgoMEA@cluster0.q65hmdh.mongodb.net/test-youapp?retryWrites=true&w=majority
+      - MESSAGE_QUEUE_URL=amqp://rabbitmq:5672
+      - JWT_EXPIRES=1h
+    volumes:
+      - .:/usr/src/app # any change to base folder should be reflected
+      - /usr/src/app/node_modules
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 ```
+
+### 3. Run docker compose
+Before this step ensure in your docker image you have these images:
+- arthuriski/youapp-backend-test-app:latest
+- rabbitmq:3-management
+
+If you already have these image, then
+```bash
+docker-compose up
+```
+
+This command will automatically pull the necessary RabbitMQ image if it’s not already present and will start both the app and RabbitMQ services.
+
+This command also automatically running the docker
+
+## Check logs / terminal
+once you get this on your terminal
+
+<img src="public/assets/backend-app-start-working.jpg" >
+
+congrats nesjs successfully started
+
+## Try host server !
 
 visit [http://localhost:5672/](http://localhost:5672/) on your browser to make sure rabbitmq management can be accessed
 
@@ -114,6 +175,8 @@ if its connected you will see
     "message": "test-youapp Backend Connected"
 }
 ```
+
+
 
 
 ## API Endpoint
