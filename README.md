@@ -46,21 +46,22 @@ This is a NestJS-based application with MongoDB for data storage and RabbitMQ fo
 
 
 
+
 # How to run this app ?
 
 ## 1. Run Locally
-### Make sure you login into docker hub
+### Pull rabbitmq diocker image
 
 Pull [rabbitmq's official docker image](https://hub.docker.com/_/rabbitmq) from docker hub to your image
 
 or on terminal
 ```bash
-docker pull rabbitmq
+docker pull rabbitmq:3-management
 ```
 
 run the image
 ```bash
-docker run rabbitmq
+docker run --name rabbitmq -d -p 15672:15672 rabbitmq:3-management
 ```
 visit [http://localhost:5672/](http://localhost:5672/) on your browser to make sure rabbitmq management can be accessed
 
@@ -91,19 +92,12 @@ Start the server
 ```
 ## 2. Using Docker
 
-### 1. Pull the `docker image` of this app
- from [here](https://hub.docker.com/r/arthuriski/youapp-backend-test-app),  or on your terminal
-```bash
-docker pull arthuriski/youapp-backend-test-app
-```
 
-### 2. Make `docker.compose.yml`
-you can copy from `docker.compose.yml` from this project
-or, create on your own
+### 1. Create `docker.compose.yml`
+Create this file on your desired directory folder
 
 ```bash
 # docker.compose.yml
-# Use root/example as user/password credentials
 version: '3.8'
 
 services:
@@ -119,9 +113,8 @@ services:
       - app-network
 
   app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: arthuriski/youapp-backend-test-app:latest
+    container_name: my-nestapp-backend
     depends_on:
       - rabbitmq
     ports:
@@ -129,10 +122,8 @@ services:
     environment:
       - DB_URI=mongodb+srv://SbhxKp6yVUfgoMEA:SbhxKp6yVUfgoMEA@cluster0.q65hmdh.mongodb.net/test-youapp?retryWrites=true&w=majority
       - MESSAGE_QUEUE_URL=amqp://rabbitmq:5672
+      - JWT_SECRET=n3st4pp
       - JWT_EXPIRES=1h
-    volumes:
-      - .:/usr/src/app # any change to base folder should be reflected
-      - /usr/src/app/node_modules
     networks:
       - app-network
 
@@ -141,21 +132,29 @@ networks:
     driver: bridge
 ```
 
-### 3. Run docker compose
-Before this step ensure in your docker image you have these images:
-- arthuriski/youapp-backend-test-app:latest
-- rabbitmq:3-management
-
-If you already have these image, then
+### 2. Run docker compose
+Last step is run the `docker.compose.yml` file by:
 ```bash
 docker-compose up
 ```
 
-This command will automatically pull the necessary RabbitMQ image if it’s not already present and will start both the app and RabbitMQ services.
+#### What this command do ?
 
-This command also automatically running the docker
+1 This command will automatically pull all necessary images that described on docker compose above if it's not already present:
+- arthuriski/youapp-backend-test-app:latest [from here](https://hub.docker.com/r/arthuriski/youapp-backend-test-app)
 
-## Check logs / terminal
+```bash
+docker pull arthuriski/youapp-backend-test-app
+```
+- rabbitmq:3-management [from here](https://hub.docker.com/layers/library/rabbitmq/3-management/images/sha256-fa9e956f0d74794b2fcadd818ef90aa7b91a9807a6628af27ac6b5936ebad417?context=explore)
+```bash
+docker pull rabbitmq:3-management
+```
+
+
+2 Then will start both the app and RabbitMQ services.
+
+#### Check logs / terminal
 once you get this on your terminal
 
 <img src="public/assets/backend-app-start-working.jpg" >
@@ -174,6 +173,9 @@ if its connected you will see
     "success": true,
     "message": "test-youapp Backend Connected"
 }
+```
+
+
 ```
 
 
