@@ -186,35 +186,188 @@ if its connected you will see
 
 ## API Endpoint
 
-#### Register (Auth) POST
-```http
-/api/register
-```
-#### Login (Auth) POST
-```http
-/api/login
-```
-#### Create Profile POST
-```http
-/api/createProfile
-```
-#### Get Profile GET
-```http
-/api/getProfile
+### Auth
+| Input | Type     |
+| :-------- | :------- |
+| `email` | `string` |
+|  `username` | `string` |
+| `password` | `string` |
+
+#### 1. Register
+First you need to register a user
+
+url:
+`
+http://localhost:3000/api/register
+`
+
+method: POST
+
+body: raw json
+```bash
+{
+  "email": "youremail@mail.com",
+  "username": "yourusername",
+  "password": "#Password1",
+}
 ```
 
-#### Update Profile PUT
-```http
-/api/updateProfile
+#### 2. Login
+url:
+`
+http://localhost:3000/api/login
+`
+
+method: POST
+
+body: raw json
+```bash
+// with email login method
+{
+  "email": "youremail@mail.com",
+  "password": "#Password1",
+}
 ```
-#### Send Message CREATE
-```http
-/api/sendMessage
+
+```bash
+// with username login method
+{
+  "username": "yourusername",
+  "password": "#Password1",
+}
 ```
-#### View Messages GET
-```http
-/api/viewMessages
+### Profile
+| Input     | Type     |
+| :-------- | :------- |
+| `name`   | `string` |
+| `birthday`| `date` |
+| `weight`| `number` |
+| `height`| `number` |
+| `interest`| `string[]` Array of string |
+
+#### 3. Create Profile
+url:
+`
+http://localhost:3000/api/createProfile
+`
+
+method: POST
+
+body: raw json
+```bash
+{
+    "name": "Your Name",
+    "birthday": "2000-01-01",
+    "weight": "70",
+    "height": "180",
+    "interest": [
+        "Reading", "Running", "Hiking"
+    ]
+}
+
 ```
+#### 4. Get Profile GET
+url:
+`
+http://localhost:3000/api/getProfile
+`
+
+method: GET
+
+you should see response like this:
+```bash
+{
+    "email": "youremail@mail.com",
+    "username": "yourusername",
+    "name": "Your Name",
+    "birthday": "2000-01-01",
+    "zodiac": "Capricornus",
+    "horoscope": "Goat",
+    "weight": "70",
+    "height": "180",
+    "interests": [
+        "Reading",
+        "Running",
+        "Hiking"
+    ]
+}
+```
+
+#### 4. Update Profile
+
+url:
+`
+http://localhost:3000/api/updateProfile
+`
+
+method: PUT
+
+body: raw json
+
+Example:
+```bash
+{
+    "birthday": "2000-06-06",
+}
+```
+
+you wll see the output like this:
+
+```bash
+{
+    "email": "youremail@mail.com",
+    "username": "yourusername",
+    "name": "Your Name",
+    "birthday": "2000-01-01",
+    "zodiac": "Gemini",
+    "horoscope": "Twins",
+    "weight": "70",
+    "height": "180",
+    "interests": [
+        "Reading",
+        "Running",
+        "Hiking"
+    ]
+}
+```
+### Messages
+| Input     | Type     |
+| :-------- | :------- |
+| `receiver`   | `string` |
+| `message`| `string` |
+
+#### 5. Send Message
+url:
+`
+http://localhost:3000/api/sendMessage
+`
+
+method: POST
+
+body: raw json
+```bash
+{
+  "receiver": "otheruser",
+  "message": "Hi, How are you ?"
+}
+```
+#### 6. View Messages
+url:
+`
+http://localhost:3000/api/viewMessages
+`
+
+method: GET
+
+query params:
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `username`      | `string` | **Required**. username message(s) to view |
+| `page`      | `number` | **Optional**. page to see the message |
+| `limit`      | `number` | **Optional**. message item limit per page |
+
+
+
 ## Environment Variables
 
 Copy this following environtment variables to your `.env` file to run this project.
